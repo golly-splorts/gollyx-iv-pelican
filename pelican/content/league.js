@@ -66,8 +66,20 @@
         }
 
         if (this.season <= this.currentSeason) {
-          this.updateSeasonHeader(this.season);
-          this.processStandingsData(this.season);
+          this.updateSeasonHeader(this.currentSeason);
+
+          let url = this.baseApiUrl + '/dps';
+          fetch(url)
+          .then(res => res.json())
+          .then((dpsApiResult) => {
+            this.updateSeasonDayPicker(dpsApiResult, this.currentSeason, this.currentDay);
+          })
+          .catch(err => {
+            console.log(err);
+            this.error(-1);
+          });
+
+          this.processStandingsData(this.currentSeason);
         }
       })
       .catch(err => {
@@ -77,6 +89,8 @@
     },
 
     updateSeasonHeader : function(season0) {
+
+      // Populate the "Season X" header
 
       var seasonHeaderContainer = document.getElementById('league-standings-header-container');
 
@@ -88,6 +102,35 @@
       }
 
       seasonHeaderContainer.classList.remove('invisible');
+
+    },
+
+    updateSeasonDayPicker : function(dps, season0, day0) {
+
+      // Populate the season/day drop-down pickers
+
+      var pickerContainer, seasonPicker, dayPicker;
+
+      pickerContainer = document.getElementById('league-standings-date-picker-container');
+      pickerContainer.classList.remove('invisible');
+      seasonPicker = document.getElementById('season-picker-select');
+      dayPicker = document.getElementById('day-picker-select');
+
+      var iSeason, iDay;
+      for (iSeason = 0; iSeason <= season0; iSeason++) {
+        pickerOption = document.createElement('option');
+        pickerOption['value'] = iSeason+1;
+        pickerOption.text = iSeason+1;
+        
+        seasonPicker.appendChild(pickerOption);
+      }
+      for (iDay = 0; iDay <= Math.min(day0, dps-1); iDay++) {
+        pickerOption = document.createElement('option');
+        pickerOption['value'] = iDay+1;
+        pickerOption.text = iDay+1;
+
+        dayPicker.appendChild(pickerOption);
+      }
 
     },
 
