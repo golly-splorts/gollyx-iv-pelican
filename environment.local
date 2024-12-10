@@ -5,5 +5,6 @@ export GOLLYX_UI_PORT="8000"
 export GOLLYX_API_PORT="8989"
 
 export GOLLYX_BASE_UI="http://localhost:${GOLLYX_UI_PORT}"
-export GOLLYX_BASE_API="https://cloud.iv.golly456.life"
+#export GOLLYX_BASE_API="https://cloud.iv.golly456.life"
+export GOLLYX_BASE_API="http://127.0.0.1:5000"
 export GOLLYX_MAPS_API="https://maps.golly456.life"
