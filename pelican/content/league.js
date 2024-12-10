@@ -27,6 +27,13 @@
      * Handle the case of an error, tell the user something is wrong
      */
     error : function(mode) {
+
+      // This is not working at all... I have no idea how to fix.
+      // removing invisible class does not show the container-error
+      // calling error() anywhere except in the /today api call puts error in wrong place
+      // calling error() in the /today api call results in a blank page
+      // adding invisible class to containers[c] does not make them disappear
+
       // Hide elements
       this.loadingElem.classList.add('invisible');
 
@@ -48,10 +55,6 @@
     loading : function() {
       this.loadingElem = document.getElementById('container-loading');
       this.loadingElem.classList.remove('invisible');
-    },
-
-    getCurrentSeasonDay : function() {
-
     },
 
     /**
@@ -81,8 +84,8 @@
       .then(res => res.json())
       .then((todayApiResult) => {
 
-        this.currentSeason = todayApiResult[0];
-        this.currentDay = todayApiResult[1];
+        this.currentSeason = parseInt(todayApiResult[0]);
+        this.currentDay = parseInt(todayApiResult[1]);
 
         // Use this.season instead of this.currentSeason,
         // in case user selected different season.
@@ -93,8 +96,10 @@
         // in case user selected different day.
         if (this.day==null) {
           this.day = this.currentDay;
-        } else if (this.day >= this.dps) {
-          this.day = this.dps;
+        }
+        if (this.day >= this.dps) {
+          // Note, day is 0-indexed
+          this.day = this.dps-1;
         }
 
         // Only continue with loading season standings
@@ -112,29 +117,26 @@
       });
     },
 
+    /**
+     * Function called to handle onChange events for season/day dropdown boxes
+     */
     changeHandler : function () {
-      console.log('Dropdown change handler');
 
       newSeason = document.getElementById('season-picker-select');
       newDay    = document.getElementById('day-picker-select');
 
+      // Dropdown options are 1-indexed, season/day vars are 0-indexed
       newSeason0 = newSeason.value-1;
       newDay0    = newDay.value-1;
-      
-      console.log(newSeason0);
-      console.log(newDay0);
-      console.log(LeaguePage.currentSeason);
 
       // Set to current season if too large
       if (newSeason0 > LeaguePage.currentSeason) {
         newSeason0 = LeaguePage.currentSeason;
       }
 
+      // Updating standings data with updated season/day values
       LeaguePage.updateSeasonHeader(newSeason0);
-
-      // When this triggers, we get a set of new team boxes tacked on, with no logos
-      // This should instead separate the drawing vs the updating
-      //LeaguePage.processStandingsData(newSeason0, newDay0);
+      LeaguePage.updateStandingsData(newSeason0, newDay0);
     },
 
     updateSeasonHeader : function(season0) {
@@ -231,6 +233,9 @@
             // Create the <ul> and <li> elements for the division team ranking list
             var ulElemId = 'league-' + iLp1 + '-division-' + iDp1 + '-ul';
             var ulElem = document.getElementById(ulElemId);
+
+            // Clear contents before re-populating
+            ulElem.innerHTML = "";
 
             // Now use the structured league/division nested dictionary
             teamStandingsItems = standingsApiResult.rankings[league][division];
@@ -333,6 +338,7 @@
               // ----------------
               // Right side: win-loss record, wrapped by <h6>
               var h6r = document.createElement('h6');
+              h6r.setAttribute('id', 'team-record-' + teamStandings.teamAbbr.toLowerCase());
               h6r.classList.add('standings-team-record');
 
               var wlElem = document.createElement('span');
@@ -367,6 +373,41 @@
     },
 
 
+    updateStandingsData : function(season0, day0) {
+
+      // Load the league standings
+      let recordsUrl = this.baseApiUrl + '/standings/' + season0 + '/' + day0;
+      fetch(recordsUrl)
+      .then(res => res.json())
+      .then((standingsApiResult) => {
+
+        console.log('updating standings with api results...');
+        // console.log(standingsApiResult);
+
+        for (var iL in standingsApiResult.leagues) {
+          league = standingsApiResult.leagues[iL];
+          for (var iD in standingsApiResult.divisions) {
+            division = standingsApiResult.divisions[iD];
+            teamStandingsItems = standingsApiResult.rankings[league][division];
+            var iS;
+            for (iS = 0; iS < teamStandingsItems.length; iS++) {
+              teamStandings = teamStandingsItems[iS];
+              winLossStr = teamStandings.teamWinLoss[0] + '-' + teamStandings.teamWinLoss[1];
+              standingsId = 'team-record-' + teamStandings.teamAbbr.toLowerCase();
+              standingsElem = document.getElementById(standingsId);
+              standingsElem.innerHTML = winLossStr;
+            }
+          }
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        this.error(-1);
+      }); // end API /standings
+
+    },
+
+
     /**
      * Register event handlers for this session (one time execution)
      */
@@ -379,35 +420,35 @@
     },
 
 
-    /** ****************************************************************************************************************************
-     * Event Handlers
-     */
-    handlers : {
+    // /** ****************************************************************************************************************************
+    //  * Event Handlers
+    //  */
+    // handlers : {
 
-      selectors : {
-        /**
-         * Selector Handler - Change Event
-         */
-        change : function() {
-          newSeason = document.getElementById('season-picker-select');
-          newDay    = document.getElementById('day-picker-select');
-          
-          newSeason0 = newSeason.value-1;
-          newDay0    = newDay.value-1;
+    //   selectors : {
+    //     /**
+    //      * Selector Handler - Change Event
+    //      */
+    //     change : function() {
+    //       newSeason = document.getElementById('season-picker-select');
+    //       newDay    = document.getElementById('day-picker-select');
+    //
+    //       newSeason0 = newSeason.value-1;
+    //       newDay0    = newDay.value-1;
 
-          console.log(newSeason0);
-          console.log(newDay0);
-          console.log(LeaguePage.currentSeason);
+    //       console.log(newSeason0);
+    //       console.log(newDay0);
+    //       console.log(LeaguePage.currentSeason);
 
-          if (newSeason0 <= LeaguePage.currentSeason) {
-            console.log('repopulating standings data');
-            this.updateSeasonHeader(LeaguePage.season);
-            this.processStandingsData(LeaguePage.season);
-          }
-        },
-      }
+    //       if (newSeason0 <= LeaguePage.currentSeason) {
+    //         console.log('repopulating standings data');
+    //         this.updateSeasonHeader(LeaguePage.season);
+    //         this.processStandingsData(LeaguePage.season);
+    //       }
+    //     },
+    //   }
 
-    },
+    // },
 
     /** ****************************************************************************************************************************
      * Helper functions
