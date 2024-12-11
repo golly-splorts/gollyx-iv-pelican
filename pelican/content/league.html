@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
 
+<style>
+.table td {
+  text-align: center;
+}
+</style>
+
 <div class="container invisible" id="league-standings-header-container">
 
   <div class="row text-center league-standings-header-row">
@@ -35,18 +41,159 @@
 
 
 
+<div class="container" id="league-standings-container2">
+
+  <!-- league 1 -->
+  <div class="row text-center justify-content-lg-center league-standings-league-header-row">
+    <div class="col-md-12">
+      <h2 class="text-center league-standings-league-header-text"><span id="league-1-name"></span></h2>
+    </div>
+  </div>
+
+  <div class="row justify-content-lg-center">
+
+    <div class="col-lg-6">
+
+        <h4 class="text-center league-standings-division-header-text"><span id="league-1-division-1-name"></span></h4>
+
+        <table class="table table-bordered table-sm" style="background-color: #32383e; padding: 0.75rem 1.25rem; border: 1px solid rgba(0, 0, 0, 0.6);">
+            <tr>
+              <th scope="col">Name</th>
+              <th scope="col">W</th>
+              <th scope="col">L</th>
+              <th scope="col">TP</th>
+              <th scope="col">GB</th>
+              <th scope="col">E</th>
+              <th scope="col">WCE</th>
+            </tr>
+        
+            <tr>
+              <td scope="col" style="text-align: left;">
+                  <h6 class="standings-team-name">
+                  <span id="league-name-icon-holder"><span id="team-icon-container-btx2" class="icon-container league-icon-container text-center"><object type="image/svg+xml" rel="prefetch" data="../img/btx2.svg" height="25" width="25" id="team-icon-btx2" class="icon team-icon"></object></span></span>
+                  <span style="color: rgb(62, 146, 204);">Baltimore Texas II</span>
+                  </h6>
+              </td>
+              <td scope="col">
+                  <h6 id="team-record-btx2">
+                      32
+                  </h6>
+              </td>
+              <th scope="col">
+                  <h6 id="team-record-btx2">
+                      17
+                  </h6>
+              </td>
+              <td scope="col">
+                  <h6 id="team-record-btx2">
+                      <span class="standings-tp">92,817</span>
+                  </h6>
+              </td>
+              <td scope="col">
+                  <h6 id="team-record-btx2">
+                      <span class="standings-gb">-</span>
+                  </h6>
+              </td>
+              <td scope="col">
+                  <h6 id="team-record-btx2">
+                      <span class="standings-elim">-</span>
+                  </h6>
+              </td>
+              <td scope="col">
+                  <h6 id="team-record-btx2">
+                      <span class="standings-wcelim">-</span>
+                  </h6>
+              </td>
+        </table>
+
+    </div>
+
+    <div class="col-lg-6">
+
+      <h4 class="text-center league-standings-division-header-text"><span id="league-1-division-2-name"></span></h4>
+
+      <table class="table table-bordered table-sm" style="background-color: #32383e; padding: 0.75rem 1.25rem; border: 1px solid rgba(0, 0, 0, 0.6);">
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">W</th>
+            <th scope="col">L</th>
+            <th scope="col">TP</th>
+            <th scope="col">GB</th>
+            <th scope="col">E</th>
+            <th scope="col">WCE</th>
+          </tr>
+      
+          <tr>
+            <td scope="col" style="text-align: left;">
+                <h6 class="standings-team-name">
+                <span id="league-name-icon-holder"><span id="team-icon-container-btx2" class="icon-container league-icon-container text-center"><object type="image/svg+xml" rel="prefetch" data="../img/btx2.svg" height="25" width="25" id="team-icon-btx2" class="icon team-icon"></object></span></span>
+                <span style="color: rgb(62, 146, 204);">Baltimore Texas II</span>
+                </h6>
+            </td>
+            <td scope="col">
+                <h6 id="team-record-btx2">
+                    32
+                </h6>
+            </td>
+            <th scope="col">
+                <h6 id="team-record-btx2">
+                    17
+                </h6>
+            </td>
+            <td scope="col">
+                <h6 id="team-record-btx2">
+                    <span class="standings-tp">92,817</span>
+                </h6>
+            </td>
+            <td scope="col">
+                <h6 id="team-record-btx2">
+                    <span class="standings-gb">-</span>
+                </h6>
+            </td>
+            <td scope="col">
+                <h6 id="team-record-btx2">
+                    <span class="standings-elim">-</span>
+                </h6>
+            </td>
+            <td scope="col">
+                <h6 id="team-record-btx2">
+                    <span class="standings-wcelim">-</span>
+                </h6>
+            </td>
+      </table>
+
+    </div>
+
+  </div>
+
+
+  <div class="row justify-content-lg-center">
+    <p>
+      TP: Total Points <small>[Tiebreaker]</small><br />
+      GB: Games Behind<br />
+      E: Elimination Number <small>[When this number drops below 0, the team cannot win 1st place in their division.]</small><br />
+      WCE: Wild Card Elimination Number <small>[When this number drops below 0, the team is eliminated from the playoffs.]</small><br />
+    </p>
+  </div>
+
+
+</div>
+
+
+
+
 <div class="container invisible" id="league-standings-container">
 
   <!-- league 1 -->
   <div class="row text-center justify-content-lg-center league-standings-league-header-row">
-    <div class="col-md-8">
+    <div class="col-md-12">
       <h2 class="text-center league-standings-league-header-text"><span id="league-1-name"></span></h2>
     </div>
   </div>
 
   <div class="row justify-content-lg-center" id="league-1-container">
 
-    <div class="col-lg-5" id="league-1-division-1-container">
+    <div class="col-lg-6" id="league-1-division-1-container">
       <h4 class="text-center league-standings-division-header-text"><span id="league-1-division-1-name"></span></h4>
       <ul class="list-group" id="league-1-division-1-ul">
         <!--
@@ -58,7 +205,7 @@
       </ul>
     </div>
 
-    <div class="col-lg-5" id="league-1-division-2-container">
+    <div class="col-lg-6" id="league-1-division-2-container">
       <h4 class="text-center league-standings-division-header-text"><span id="league-1-division-2-name"></span></h4>
       <ul class="list-group" id="league-1-division-2-ul">
         <!--
